@@ -1,0 +1,79 @@
+opt_out_usage
+def flutter_path
+  Dir.pwd.sub(/.*\Kfastlane/, '').sub(/.*\Kandroid/, '').sub(/.*\Kios/, '').sub(/.*\K\/\//, '')
+end
+
+versionName = 0
+versionCode = 0
+
+lane :sh_on_root do |options|
+  command = options[:command]
+  sh("cd #{flutter_path} && #{command}")
+end
+
+lane :initz do
+  latest_release = firebase_app_distribution_get_latest_release(
+    app: ENV['ANDROID_APP_ID']
+  )
+  
+  if latest_release.nil?
+    versionCode = 1
+    versionName = "1.0"
+    UI.message "Package Info: #{latest_release}, #{versionName} #{versionCode}"
+    increment_version_code({ version_code: versionCode })
+  else
+    versionCode = latest_release[:buildVersion].to_i + 1
+    versionName = latest_release[:displayVersion].to_i
+  end
+  
+  UI.message "Package Info: #{latest_release}, #{versionName} #{versionCode}"
+  increment_version_code({ version_code: versionCode })
+end
+
+
+lane :fetch_dependencies do
+  sh_on_root(command: "flutter clean")
+  sh_on_root(command: "flutter pub get")
+end
+
+lane :build_apk do
+  sh_on_root(command: "flutter build apk --dart-define=flavor=#{ENV['FLAVOR']} --flavor #{ENV['FLAVOR']} -t lib/main_#{ENV['FLAVOR']}.dart --obfuscate --split-debug-info=./debug_symbol")
+end
+
+lane :upload_android_symbols_to_firebase_crashlytics do
+  if ENV['FLAVOR'] != 'dev'
+    sh_on_root(command: "firebase crashlytics:symbols:upload --app=#{ENV['ANDROID_APP_ID']} ./debug_symbol")
+  end
+end
+
+lane :distribute_to_firebase do
+  release_note = "New android build \nVersion Name: #{versionName} \nVersion Code: #{versionCode}"
+  firebase_app_distribution(
+    app: ENV['ANDROID_APP_ID'],
+    groups: ENV['TESTER_GROUP_NAME'],
+    release_notes: release_note,
+    android_artifact_path: "#{flutter_path}/build/app/outputs/flutter-apk/app-#{ENV['FLAVOR']}-release.apk"
+  )
+end
+
+lane :notify_to_group do
+  telegram(
+    token: ENV['TG_BOT_TOKEN'],
+    chat_id: ENV['TG_CHAT_ID'],
+    text: "[#{ENV['FLAVOR']}]Android Example app: UPDATE VERSION!! \nVersion Name: #{versionName} \nVersion Code: #{versionCode}"
+  )
+end
+
+default_platform(:android)
+
+platform :android do
+  desc "New Android build for Example app"
+  lane :androidlane do
+    initz
+    fetch_dependencies
+    build_apk
+    upload_android_symbols_to_firebase_crashlytics
+    distribute_to_firebase
+    notify_to_group
+  end
+end
