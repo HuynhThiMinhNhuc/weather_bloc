@@ -19,14 +19,17 @@ dependencies:
   flutter_bloc: 9.1.0
   equatable: 2.0.7
 
-  #api 
+  #api & log
   dio: 5.8.0+1
   pretty_dio_logger: 1.4.0
+  logger: 2.5.0
+  path_provider: 2.1.5
+
+  # DI
+  get_it: 8.0.3
 
   #ui
-  cupertino_icons: 1.0.8
-  
-
+  cupertino_icons: 1.0.8 
 
 dev_dependencies:
   flutter_test:

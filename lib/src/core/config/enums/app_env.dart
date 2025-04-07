@@ -10,22 +10,33 @@ extension AppEnvExt on AppEnv {
   String get appName {
     switch (this) {
       case AppEnv.dev:
-        return AppConstant.devAppName;
+        return AppConstants.devAppName;
       case AppEnv.stg:
-        return AppConstant.stgAppname;
+        return AppConstants.stgAppname;
       case AppEnv.pro:
-        return AppConstant.proAppName;
+        return AppConstants.proAppName;
     }
   }
 
   String get value {
     switch (this) {
       case AppEnv.dev:
-        return AppConstant.devFlavorName;
+        return AppConstants.devFlavorName;
       case AppEnv.stg:
-        return AppConstant.stgFlavorName;
+        return AppConstants.stgFlavorName;
       case AppEnv.pro:
-        return AppConstant.proFlavorName;
+        return AppConstants.proFlavorName;
+    }
+  }
+
+  String get baseUrl {
+    switch (this) {
+      case AppEnv.dev:
+        return AppConstants.devBaseUrl;
+      case AppEnv.stg:
+        return AppConstants.stgBaseUrl;
+      case AppEnv.pro:
+        return AppConstants.proBaseUrl;
     }
   }
 }
