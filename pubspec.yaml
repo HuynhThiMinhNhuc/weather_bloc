@@ -25,6 +25,7 @@ dependencies:
 
   #ui
   cupertino_icons: 1.0.8
+  
 
 
 dev_dependencies:
@@ -33,6 +34,7 @@ dev_dependencies:
   flutter_lints: 5.0.0
   mockito: 5.4.5
   flutter_launcher_icons: 0.14.3
+  flutter_dotenv: 5.2.1
 
 flutter:
   uses-material-design: true

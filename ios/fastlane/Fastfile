@@ -1,0 +1,139 @@
+opt_out_usage
+def flutter_path
+  Dir.pwd.sub(/.*\Kfastlane/, '').sub(/.*\Kandroid/, '').sub(/.*\Kios/, '').sub(/.*\K\/\//, '')
+end
+
+def root_path 
+  Dir.pwd
+end
+
+versionName = 0
+versionCode = 0
+
+lane :sh_on_root do |options|
+  command = options[:command]
+  sh("cd #{flutter_path} && #{command}")
+end
+
+lane :fetch_dependencies do
+  sh_on_root(command: "flutter clean")
+  sh_on_root(command: "flutter pub get")
+end
+
+lane :setup_app_provisioning do
+    update_project_provisioning(
+      xcodeproj: "Runner.xcodeproj",
+      build_configuration: "Release-#{ENV['FLAVOR']}",
+      profile: ENV['PROVISIONING_PROFILE_NAME'], # optional if you use sigh
+      code_signing_identity: "Apple Development" # optionally specify the codesigning identity
+    )
+end
+
+lane :increment_version do
+  latest_release = firebase_app_distribution_get_latest_release(
+    app: ENV['IOS_APP_ID']
+  )
+
+  if latest_release
+    increment_build_number({ build_number: latest_release[:buildVersion].to_i + 1 })
+  else
+    increment_build_number({ build_number: 1 })
+  end
+
+  versionName = get_version_number(
+   xcodeproj: "#{flutter_path}/ios/Runner.xcodeproj",
+   target: "Runner"
+  )
+  versionCode = get_build_number(xcodeproj: "#{flutter_path}/ios/Runner.xcodeproj")
+  UI.message "Package Info: version: #{versionName} build_number  #{versionCode}"
+end
+
+lane :build_ipa do
+ sh_on_root(command: "flutter build ipa --dart-define=flavor=#{ENV['FLAVOR']} --flavor #{ENV['FLAVOR']} lib/main_#{ENV['FLAVOR']}.dart --release")
+ gym(
+    scheme: ENV['FLAVOR'],
+    workspace: "Runner.xcworkspace",
+    configuration: "Release-#{ENV['FLAVOR']}",
+    clean: true,
+    archive_path: "#{flutter_path}/build/ios/archive/Runner.xcarchive",
+    output_directory: "#{flutter_path}/build/ios",
+    export_options: {
+       method: "development",
+       signingStyle: "manual",
+       provisioningProfiles: {
+         ENV['BUNDLE_IDENTIFIER'] => ENV['APP_PROVISIONING_PROFILE_NAME'],
+       }
+    },
+ )
+end
+
+lane :distribute_to_firebase do
+  changelog = read_changelog(
+    changelog_path: './../CHANGELOG.md',
+    section_identifier: '[Unreleased]',   # Specify what section to read
+    excluded_markdown_elements: ['-', '###']
+  )
+  UI.message "CHANGELOG: #{changelog}"
+
+  firebase_app_distribution(
+    app: ENV['IOS_APP_ID'],
+    groups: ENV['TESTER_GROUP'],
+    release_notes: changelog,
+    ipa_path: "#{flutter_path}/build/ios/Runner.ipa",
+  )
+end
+
+
+lane :commit_allchange do
+  git_commit(
+    path: ["#{root_path}/CHANGELOG.md", "#{root_path}/android/app/build.gradle", "#{root_path}/ios/supper_app/Info.plist", "#{root_path}/ios/supper_app.xcodeproj/project.pbxproj", "#{root_path}/ios/supper_appTests/Info.plist",], 
+    message: "Update changelog + build app version: #{versionName}(#{versionCode})", 
+    skip_git_hooks: true, 
+    allow_nothing_to_commit: true,
+  )
+end
+
+lane :push_files do
+  push_to_git_remote(
+    force: true,    # optional, default: false
+    force_with_lease: true,   # optional, default: false
+    tags: false,    # optional, default: true
+    no_verify: true,# optional, default: false
+    set_upstream: true        # optional, default: false
+  ) 
+end
+
+lane :post_process_for_release do
+  stamp_changelog(
+   changelog_path: './../CHANGELOG.md',
+   section_identifier: "#{versionName}(#{versionCode})",
+   git_tag: "v#{versionName}(#{versionCode})",
+   should_stamp_date: true,
+   stamp_datetime_format: '%FT%TZ'
+  )
+end
+
+lane :notify_to_group do
+  telegram(
+    token: ENV['TG_BOT_TOKEN'],
+    chat_id: ENV['TG_CHAT_ID'],
+    text: "[#{ENV['FLAVOR'].upcase}][IOS] Example app: \nVersion: #{versionName}(#{versionCode})"
+  )
+end
+
+default_platform(:ios)
+
+platform :ios do
+  desc "New iOS build for Example app"
+  lane :ioslane do
+    fetch_dependencies
+    increment_version
+    setup_app_provisioning
+    build_ipa
+    distribute_to_firebase
+    notify_to_group
+    commit_allchange
+    push_files
+    post_process_for_release
+  end
+end

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: opt_out_usage" time="0.0022491">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: default_platform" time="0.0010642">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: Switch to sh_on_root lane" time="0.0011148">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: cd E:/example_app &amp;&amp; flutter build apk --dart-define=flavor=dev --flavor dev -t lib/main_dev.dart --obfuscate --split-debug-info=./debug_symbol" time="187.9467312">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>
