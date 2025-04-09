@@ -72,6 +72,7 @@ class APIProvider {
 
   void throwIfNoSuccess(Response response) {
     if (response.statusCode == null) throw HttpException(response);
+    if (response.statusCode == 401) throw HttpException(response);
     if (response.statusCode! < 200 || response.statusCode! > 299) {
       throw HttpException(response);
     }
@@ -82,4 +83,9 @@ class HttpException implements Exception {
   Response response;
 
   HttpException(this.response);
+}
+
+class InvalidApiKeyException implements Exception {
+  Response response;
+  InvalidApiKeyException(this.response);
 }

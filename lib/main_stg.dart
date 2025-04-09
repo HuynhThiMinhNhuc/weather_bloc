@@ -4,6 +4,7 @@ import 'package:example_app/src/core/config/locator.dart';
 import 'package:example_app/src/core/theme/palette.dart';
 import 'package:flavor/flavor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +15,8 @@ void main() async {
     name: AppEnv.stg.value,
   );
 
-  await setUpLocator();
+  await dotenv.load(fileName: ".env");
+  await setUpLocator(AppEnv.stg);
+
   runApp(ExampleApp(env: AppEnv.stg));
 }

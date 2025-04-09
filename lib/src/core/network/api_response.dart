@@ -11,6 +11,7 @@ enum Status {
   timeout,
   clientError,
   serverError,
+  invalidApiKeyException,
   unknown,
 }
 
@@ -31,6 +32,8 @@ extension StatusExts on Status {
         return 'There are some errors occured, please check your information and try again!';
       case Status.serverError:
         return 'There are some errors occured from server, please try again!';
+      case Status.invalidApiKeyException:
+        return 'Invalid API key!';
       case Status.unknown:
         return 'Unknown error!';
     }
@@ -42,9 +45,7 @@ class ResponseData<T> {
   T? data;
   String? message = '';
 
-  bool isSuccess() {
-    return status == Status.success;
-  }
+  bool get isSuccess => status == Status.success;
 
   ResponseData.success(this.data, {dynamic response}) {
     status = Status.success;
