@@ -10,9 +10,13 @@ abstract class AppConstants {
   static const String proFlavorName = 'pro';
 
   // base_url
-  static const String devBaseUrl = 'https://api.openweathermap.org/data/3.0/';
-  static const String stgBaseUrl = 'https://api.openweathermap.org/data/3.0/';
-  static const String proBaseUrl = 'https://api.openweathermap.org/data/3.0/';
+  static const String devBaseUrl = 'https://api.openweathermap.org/data/2.5/';
+  static const String stgBaseUrl = 'https://api.openweathermap.org/data/2.5/';
+  static const String proBaseUrl = 'https://api.openweathermap.org/data/2.5/';
+
+  //enpoints
+  static const String weatherEndpoint = 'weather';
+  static const String forecastEndpoint = 'forecast';
 
   // others
   static const String logFilename = 'example_log.txt';
