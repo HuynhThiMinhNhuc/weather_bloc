@@ -23,14 +23,12 @@ Map<String, dynamic> _$WeatherParamsToJson(_WeatherParams instance) =>
 _WeatherInfo _$WeatherInfoFromJson(Map<String, dynamic> json) => _WeatherInfo(
   main: json['main'] as String,
   description: json['description'] as String,
-  icon: json['icon'] as String,
 );
 
 Map<String, dynamic> _$WeatherInfoToJson(_WeatherInfo instance) =>
     <String, dynamic>{
       'main': instance.main,
       'description': instance.description,
-      'icon': instance.icon,
     };
 
 _Weather _$WeatherFromJson(Map<String, dynamic> json) => _Weather(

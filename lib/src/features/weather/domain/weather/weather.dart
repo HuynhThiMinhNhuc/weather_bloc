@@ -17,11 +17,8 @@ abstract class WeatherParams with _$WeatherParams {
 
 @freezed
 abstract class WeatherInfo with _$WeatherInfo {
-  factory WeatherInfo({
-    required String main,
-    required String description,
-    required String icon,
-  }) = _WeatherInfo;
+  factory WeatherInfo({required String main, required String description}) =
+      _WeatherInfo;
 
   factory WeatherInfo.fromJson(Map<String, dynamic> json) =>
       _$WeatherInfoFromJson(json);

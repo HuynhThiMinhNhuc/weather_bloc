@@ -155,7 +155,7 @@ as double,
 /// @nodoc
 mixin _$WeatherInfo {
 
- String get main; String get description; String get icon;
+ String get main; String get description;
 /// Create a copy of WeatherInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -168,16 +168,16 @@ $WeatherInfoCopyWith<WeatherInfo> get copyWith => _$WeatherInfoCopyWithImpl<Weat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeatherInfo&&(identical(other.main, main) || other.main == main)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WeatherInfo&&(identical(other.main, main) || other.main == main)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,main,description,icon);
+int get hashCode => Object.hash(runtimeType,main,description);
 
 @override
 String toString() {
-  return 'WeatherInfo(main: $main, description: $description, icon: $icon)';
+  return 'WeatherInfo(main: $main, description: $description)';
 }
 
 
@@ -188,7 +188,7 @@ abstract mixin class $WeatherInfoCopyWith<$Res>  {
   factory $WeatherInfoCopyWith(WeatherInfo value, $Res Function(WeatherInfo) _then) = _$WeatherInfoCopyWithImpl;
 @useResult
 $Res call({
- String main, String description, String icon
+ String main, String description
 });
 
 
@@ -205,11 +205,10 @@ class _$WeatherInfoCopyWithImpl<$Res>
 
 /// Create a copy of WeatherInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? main = null,Object? description = null,Object? icon = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? main = null,Object? description = null,}) {
   return _then(_self.copyWith(
 main: null == main ? _self.main : main // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -221,12 +220,11 @@ as String,
 @JsonSerializable()
 
 class _WeatherInfo implements WeatherInfo {
-   _WeatherInfo({required this.main, required this.description, required this.icon});
+   _WeatherInfo({required this.main, required this.description});
   factory _WeatherInfo.fromJson(Map<String, dynamic> json) => _$WeatherInfoFromJson(json);
 
 @override final  String main;
 @override final  String description;
-@override final  String icon;
 
 /// Create a copy of WeatherInfo
 /// with the given fields replaced by the non-null parameter values.
@@ -241,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeatherInfo&&(identical(other.main, main) || other.main == main)&&(identical(other.description, description) || other.description == description)&&(identical(other.icon, icon) || other.icon == icon));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WeatherInfo&&(identical(other.main, main) || other.main == main)&&(identical(other.description, description) || other.description == description));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,main,description,icon);
+int get hashCode => Object.hash(runtimeType,main,description);
 
 @override
 String toString() {
-  return 'WeatherInfo(main: $main, description: $description, icon: $icon)';
+  return 'WeatherInfo(main: $main, description: $description)';
 }
 
 
@@ -261,7 +259,7 @@ abstract mixin class _$WeatherInfoCopyWith<$Res> implements $WeatherInfoCopyWith
   factory _$WeatherInfoCopyWith(_WeatherInfo value, $Res Function(_WeatherInfo) _then) = __$WeatherInfoCopyWithImpl;
 @override @useResult
 $Res call({
- String main, String description, String icon
+ String main, String description
 });
 
 
@@ -278,11 +276,10 @@ class __$WeatherInfoCopyWithImpl<$Res>
 
 /// Create a copy of WeatherInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? main = null,Object? description = null,Object? icon = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? main = null,Object? description = null,}) {
   return _then(_WeatherInfo(
 main: null == main ? _self.main : main // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
